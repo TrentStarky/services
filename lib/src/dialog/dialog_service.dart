@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:stacked_services/src/dialog/platform_dialog.dart';
 import 'package:stacked_services/src/models/overlay_request.dart';
 import 'package:stacked_services/src/models/overlay_response.dart';
+import 'package:stacked_services/src/stacked_service.dart';
 
 typedef DialogBuilder = Widget Function(
   BuildContext context,
@@ -30,7 +31,7 @@ class DialogService {
 
   @Deprecated('Prefer to use the StackedServices.navigatorKey instead of using this key. This will be removed in the next major version update for stacked.')
   get navigatorKey {
-    return Get.key;
+    return StackedService.navigatorKey;
   }
 
   /// Registers a custom dialog builder. The builder function has been updated to include the function to call
@@ -51,7 +52,7 @@ class DialogService {
   }
 
   /// Check if dialog is open
-  bool? get isDialogOpen => Get.isDialogOpen;
+  bool? get isDialogOpen => StackedService.routing.isDialog;
 
   /// Shows a dialog to the user
   ///
@@ -86,7 +87,9 @@ class DialogService {
         navigatorKey: navigatorKey,
       );
     } else {
-      var _dialogType = GetPlatform.isAndroid ? DialogPlatform.Material : DialogPlatform.Cupertino;
+      var _dialogType = defaultTargetPlatform == TargetPlatform.android
+          ? DialogPlatform.Material
+          : DialogPlatform.Cupertino;
       return _showDialog(
         title: title,
         description: description,
@@ -115,8 +118,18 @@ class DialogService {
     GlobalKey<NavigatorState>? navigatorKey,
   }) {
     var isConfirmationDialog = cancelTitle != null;
-    return Get.dialog<DialogResponse>(
-      PlatformDialog(
+    final key = navigatorKey ?? StackedService.navigatorKey;
+    return showGeneralDialog<DialogResponse>(
+      context: key!.currentContext!,
+      barrierDismissible: barrierDismissible,
+      barrierLabel: MaterialLocalizations.of(key.currentContext!)
+          .modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 200),
+      routeSettings: routeSettings,
+      transitionBuilder: (_, animation, __, child) =>
+          FadeTransition(opacity: animation, child: child),
+      pageBuilder: (_, __, ___) => PlatformDialog(
         key: Key('dialog_view'),
         dialogPlatform: dialogPlatform,
         title: title,
@@ -154,9 +167,6 @@ class DialogService {
           ),
         ],
       ),
-      barrierDismissible: barrierDismissible,
-      routeSettings: routeSettings,
-      navigatorKey: navigatorKey,
     );
   }
 
@@ -207,13 +217,13 @@ class DialogService {
       'You have to call registerCustomDialogBuilder to use this function. Look at the custom dialog UI section in the stacked_services readme.',
     );
 
-    return Get.generalDialog<DialogResponse<T>>(
+    return showGeneralDialog<DialogResponse<T>>(
+      context: (navigatorKey ?? StackedService.navigatorKey)!.currentContext!,
       barrierColor: barrierColor,
       transitionDuration: const Duration(milliseconds: 200),
       barrierDismissible: barrierDismissible,
       barrierLabel: barrierLabel,
       routeSettings: routeSettings,
-      navigatorKey: navigatorKey,
       transitionBuilder: transitionBuilder,
       pageBuilder: (BuildContext buildContext, _, __) {
         final child = Builder(
@@ -273,6 +283,6 @@ class DialogService {
 
   /// Completes the dialog and passes the [response] to the caller
   void completeDialog(DialogResponse response) {
-    Get.back(result: response);
+    StackedService.navigatorKey?.currentState?.pop(response);
   }
 }
