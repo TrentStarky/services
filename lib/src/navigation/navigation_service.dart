@@ -165,7 +165,8 @@ class NavigationService {
     Transition? transitionStyle,
     String? routeName,
   }) {
-    return _navigator(id)?.pushReplacement<T?, dynamic>(buildTransitionRoute<T?>(
+    return _navigator(id)
+        ?.pushReplacement<T?, dynamic>(buildTransitionRoute<T?>(
       page,
       transition: transitionStyle ??
           transitionClass ??

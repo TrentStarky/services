@@ -17,7 +17,8 @@ class StackedService {
 
   /// Creates and/or returns a navigator key based on the index passed in
   static GlobalKey<NavigatorState>? nestedNavigationKey(int index) =>
-      _nestedNavigationKeys.putIfAbsent(index, () => GlobalKey<NavigatorState>());
+      _nestedNavigationKeys.putIfAbsent(
+          index, () => GlobalKey<NavigatorState>());
 
   /// The routing state maintained by [routeObserver]. Native replacement for
   /// `Get.routing`.

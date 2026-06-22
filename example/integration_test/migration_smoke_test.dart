@@ -112,7 +112,8 @@ void main() {
     expect(find.text('Second Screen'), findsOneWidget);
 
     // Unwind the stack so transition tickers are disposed before teardown.
-    final navigator = tester.state<NavigatorState>(find.byType(Navigator).first);
+    final navigator =
+        tester.state<NavigatorState>(find.byType(Navigator).first);
     navigator.pop();
     await tester.pumpAndSettle();
     navigator.pop();

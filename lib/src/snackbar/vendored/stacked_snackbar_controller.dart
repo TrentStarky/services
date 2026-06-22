@@ -162,7 +162,8 @@ class StackedSnackbarController {
   }
 
   Animation<Color?> _createColorOverlayColor() {
-    return ColorTween(begin: const Color(0x00000000), end: snackbar.overlayColor)
+    return ColorTween(
+            begin: const Color(0x00000000), end: snackbar.overlayColor)
         .animate(
       CurvedAnimation(
         parent: _controller,
@@ -227,8 +228,9 @@ class StackedSnackbarController {
   Widget _getBodyWidget() {
     return Builder(builder: (_) {
       return GestureDetector(
-        onTap:
-            snackbar.onTap != null ? () => snackbar.onTap?.call(snackbar) : null,
+        onTap: snackbar.onTap != null
+            ? () => snackbar.onTap?.call(snackbar)
+            : null,
         child: snackbar,
       );
     });

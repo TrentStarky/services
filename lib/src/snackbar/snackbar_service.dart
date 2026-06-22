@@ -100,7 +100,8 @@ class SnackbarService {
       onTap: onTap,
       barBlur: _snackbarConfig?.barBlur ?? 7.0,
       isDismissible: _snackbarConfig?.isDismissible ?? true,
-      duration: duration ?? _snackbarConfig?.duration ?? const Duration(seconds: 3),
+      duration:
+          duration ?? _snackbarConfig?.duration ?? const Duration(seconds: 3),
       snackPosition: _snackbarConfig?.snackPosition ?? SnackPosition.TOP,
       backgroundColor: _snackbarConfig?.backgroundColor ?? Colors.grey[800]!,
       margin: _snackbarConfig?.margin ??
